@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import random
 import pyperclip
+import json
 
 letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -35,6 +36,13 @@ def save_date():
     username =username_entry.get()
     password =password_entry.get()
 
+    new_data = {
+        website: {
+            "username" : username,
+            "password" : password
+        }
+    }
+
     if website == "" or username == "" or password == "":
         messagebox.showerror(title="Error", message="Please Enter credentials")
     else:
@@ -44,15 +52,25 @@ def save_date():
                                                    f" Is this ok?")
 
     if confirmation:
-        with open("secret_data.txt", "a") as sdfile:
-            sdfile.write(f"{website} | {username} | {password}\n")
-
-
-
-    website_entry.delete(0, END)
-    username_entry.delete(0,END)
-    password_entry.delete(0, END)
-    username_entry.insert(END, "@gmail.com")
+        try:
+            with open("secret_data.json", "r") as sd_file:
+                data = json.load(sd_file)
+        except json.decoder.JSONDecodeError:
+            with open("secret_data.json", "w") as sd_file:
+                json.dump(new_data,sd_file, indent = 4)
+        except FileNotFoundError:
+            with open("secret_data.json", "w") as sd_file:
+                json.dump(new_data,sd_file, indent = 4)
+        else:
+            data.update(new_data)
+            with open("secret_data.json", "w") as sd_file:
+                json.dump(data, sd_file, indent=4)
+        finally:
+            sd_file.close()
+            website_entry.delete(0, END)
+            username_entry.delete(0,END)
+            password_entry.delete(0, END)
+            username_entry.insert(END, "@gmail.com")
 
 # ---------------------------- UI SETUP ------------------------------- #
 
