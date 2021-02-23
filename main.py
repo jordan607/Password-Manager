@@ -7,6 +7,23 @@ import json
 letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
+# ---------------------------- SEARCH PASSWORD  ------------------------------- #
+
+def find_password():
+    try:
+        with open("secret_data.json", "r") as sd_file:
+            data = json.load(sd_file)
+            username = data[website_entry.get()]['username']
+            password = data[website_entry.get()]['password']
+
+    except KeyError:
+        messagebox.showinfo(title="Error", message="No data saved for this website")
+    except FileNotFoundError:
+        messagebox.showinfo(title="Error", message="No data saved yet")
+    else:
+        messagebox.showinfo(title="Credentials",
+                    message= f"Username : {username}\n Password : {password}")
+
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
@@ -96,11 +113,11 @@ password_label.grid(row = 4, column = 1)
 
 #Entry
 
-website_entry = Entry(width = 35)
-website_entry.grid(row = 2, column = 2, columnspan = 2)
+website_entry = Entry(width = 20)
+website_entry.grid(row = 2, column = 2)
 website_entry.focus()
 
-username_entry = Entry(width = 35)
+username_entry = Entry(width = 39)
 username_entry.grid(row = 3, column = 2, columnspan=2)
 username_entry.insert(END, "@gmail.com")
 
@@ -108,10 +125,11 @@ password_entry = Entry(width = 20)
 password_entry.grid(row= 4, column = 2)
 
 #Buttons
+search_button = Button(text = "search" , width = 15, bg = "blue", command = find_password)
+search_button.grid(row= 2, column = 3)
 
 genpwd_button = Button(text = "Generate Password", width = 15 , command = gen_password, bg= "Lavender")
 genpwd_button.grid(row =4, column = 3)
-
 
 addpwd_button = Button(text = "Add", width = 30, command = save_date, bg = "Lavender")
 addpwd_button.grid(row = 5, column = 2, columnspan=2)
